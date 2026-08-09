@@ -1,4 +1,6 @@
 import express from "express";
+import upload from "../middleware/uploadMiddleware.js";
+
 import {
   getPortfolio,
   createPortfolio,
@@ -6,10 +8,26 @@ import {
 } from "../controllers/portfolioController.js";
 
 import { protect } from "../middleware/authMiddleware.js";
+
 const router = express.Router();
 
+// Get portfolio - Public
 router.get("/", getPortfolio);
-router.post("/", protect, createPortfolio);
-router.put("/:id", protect, updatePortfolio);
+
+// Create portfolio - Owner only
+router.post(
+  "/",
+  protect,
+  upload.single("profileImage"),
+  createPortfolio
+);
+
+// Update portfolio - Owner only
+router.put(
+  "/:id",
+  protect,
+  upload.single("profileImage"),
+  updatePortfolio
+);
 
 export default router;

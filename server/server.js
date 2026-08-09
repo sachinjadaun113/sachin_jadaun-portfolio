@@ -8,6 +8,12 @@ import cookieParser from "cookie-parser";
 import authRoutes from "./routes/authRoutes.js";
 import portfolioRoutes from "./routes/portfolioRoutes.js";
 import projectRoutes from "./routes/projectRoutes.js";
+import skillRoutes from "./routes/skillRoutes.js";
+import educationRoutes from "./routes/educationRoutes.js";
+import experienceRoutes from "./routes/experienceRoutes.js";
+import messageRoutes from "./routes/messageRoutes.js";
+import ratingRoutes from "./routes/ratingRoutes.js";
+
 
 dotenv.config();
 
@@ -30,7 +36,12 @@ app.use(
 // using routes
 app.use("/api/auth", authRoutes);
 app.use("/api/portfolio", portfolioRoutes);
-app.use("/api/project", portfolioRoutes);
+app.use("/api/projects", projectRoutes);
+app.use("/api/skills", skillRoutes);
+app.use("/api/education", educationRoutes);
+app.use("/api/experience", experienceRoutes);
+app.use("/api/messages", messageRoutes);
+app.use("/api/ratings", ratingRoutes);
 
 
 app.get("/", (req, res) => {

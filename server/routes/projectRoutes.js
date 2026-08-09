@@ -8,21 +8,23 @@ import {
   deleteProject,
 } from "../controllers/projectController.js";
 
+import { protect } from "../middleware/authMiddleware.js";
+
 const router = express.Router();
 
-// Get all projects
+// Get all projects - Public
 router.get("/", getProjects);
 
-// Get single project
+// Get single project - Public
 router.get("/:id", getProject);
 
-// Create project
-router.post("/", createProject);
+// Create project - Owner only
+router.post("/", protect, createProject);
 
-// Update project
-router.put("/:id", updateProject);
+// Update project - Owner only
+router.put("/:id", protect, updateProject);
 
-// Delete project
-router.delete("/:id", deleteProject);
+// Delete project - Owner only
+router.delete("/:id", protect, deleteProject);
 
 export default router;

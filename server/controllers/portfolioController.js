@@ -1,4 +1,5 @@
 import Portfolio from "../models/Portfolio.js";
+import uploadToCloudinary from "../utils/uploadToCloudinary.js";
 
 // Get portfolio
 export const getPortfolio = async (req, res) => {
@@ -36,7 +37,22 @@ export const createPortfolio = async (req, res) => {
       });
     }
 
-    const portfolio = await Portfolio.create(req.body);
+    let profileImage = "";
+
+    // Upload profile image to Cloudinary
+    if (req.file) {
+      const result = await uploadToCloudinary(
+        req.file.buffer,
+        "portfolio/profile"
+      );
+
+      profileImage = result.secure_url;
+    }
+
+    const portfolio = await Portfolio.create({
+      ...req.body,
+      profileImage,
+    });
 
     res.status(201).json({
       success: true,
@@ -51,18 +67,12 @@ export const createPortfolio = async (req, res) => {
   }
 };
 
+// Update portfolio
 export const updatePortfolio = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const portfolio = await Portfolio.findByIdAndUpdate(
-      id,
-      req.body,
-      {
-        new: true,
-        runValidators: true,
-      }
-    );
+    const portfolio = await Portfolio.findById(id);
 
     if (!portfolio) {
       return res.status(404).json({
@@ -70,6 +80,23 @@ export const updatePortfolio = async (req, res) => {
         message: "Portfolio not found",
       });
     }
+
+    // Upload new profile image if provided
+    if (req.file) {
+      const result = await uploadToCloudinary(
+        req.file.buffer,
+        "portfolio/profile"
+      );
+
+      portfolio.profileImage = result.secure_url;
+    }
+
+    // Update other portfolio fields
+    Object.keys(req.body).forEach((key) => {
+      portfolio[key] = req.body[key];
+    });
+
+    await portfolio.save();
 
     res.status(200).json({
       success: true,

@@ -18,7 +18,11 @@ router.get("/", getPortfolio);
 router.post(
   "/",
   protect,
-  upload.single("profileImage"),
+  upload.fields([
+    { name: "profileImage", maxCount: 1 },
+    { name: "resume", maxCount: 1 },
+    { name: "cv", maxCount: 1 },
+  ]),
   createPortfolio
 );
 
@@ -26,7 +30,11 @@ router.post(
 router.put(
   "/:id",
   protect,
-  upload.single("profileImage"),
+  upload.fields([
+    { name: "profileImage", maxCount: 1 },
+    { name: "resume", maxCount: 1 },
+    { name: "cv", maxCount: 1 },
+  ]),
   updatePortfolio
 );
 

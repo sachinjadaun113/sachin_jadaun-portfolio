@@ -3,6 +3,7 @@ import express from "express";
 import cors from "cors";
 import connectDB from "./config/db.js";
 import cookieParser from "cookie-parser";
+import errorMiddleware from "./middleware/errorMiddleware.js";
 
 // importing router
 import authRoutes from "./routes/authRoutes.js";
@@ -13,7 +14,7 @@ import educationRoutes from "./routes/educationRoutes.js";
 import experienceRoutes from "./routes/experienceRoutes.js";
 import messageRoutes from "./routes/messageRoutes.js";
 import ratingRoutes from "./routes/ratingRoutes.js";
-
+import documentRoutes from "./routes/documentRoutes.js";
 
 dotenv.config();
 
@@ -42,11 +43,15 @@ app.use("/api/education", educationRoutes);
 app.use("/api/experience", experienceRoutes);
 app.use("/api/messages", messageRoutes);
 app.use("/api/ratings", ratingRoutes);
+app.use("/api/documents", documentRoutes);
 
 
 app.get("/", (req, res) => {
   res.send("Portfolio Backend Running Successfully ");
 });
+
+// error middleware
+app.use(errorMiddleware);
 
 app.listen(PORT, () => {
   console.log(` Server is running on http://localhost:${PORT}`);

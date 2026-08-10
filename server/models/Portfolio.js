@@ -30,6 +30,11 @@ const portfolioSchema = new mongoose.Schema(
       default: "",
     },
 
+    cvUrl: {
+      type: String,
+      default: "",
+    },
+
     githubUrl: {
       type: String,
       default: "",

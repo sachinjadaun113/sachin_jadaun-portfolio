@@ -14,9 +14,14 @@ const projectSchema = new mongoose.Schema(
       trim: true,
     },
 
-    image: {
-      type: String,
-      default: "",
+    images: {
+      type: [String],
+      default: [],
+    },
+
+    videos: {
+      type: [String],
+      default: [],
     },
 
     liveUrl: {

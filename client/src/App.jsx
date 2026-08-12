@@ -1,7 +1,7 @@
+import PortfolioLayout from "./layouts/PortfolioLayout";
+
 function App() {
-  return (
-    <h1>Hello Sachin 🚀</h1>
-  );
+  return <PortfolioLayout />;
 }
 
 export default App;

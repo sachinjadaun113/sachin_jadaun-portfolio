@@ -1,10 +1,12 @@
 import Message from "../models/Message.js";
+import sendEmail from "../utils/sendEmail.js";
 
 // Create message - Public
 export const createMessage = async (req, res) => {
   try {
     const { name, email, subject, message } = req.body;
 
+    // Validate required fields
     if (!name || !email || !message) {
       return res.status(400).json({
         success: false,
@@ -12,6 +14,7 @@ export const createMessage = async (req, res) => {
       });
     }
 
+    // Save message in MongoDB
     const newMessage = await Message.create({
       name,
       email,
@@ -19,12 +22,73 @@ export const createMessage = async (req, res) => {
       message,
     });
 
+    // Send email notification to you
+    try {
+      await sendEmail({
+        to: process.env.EMAIL_GET_USER,
+        subject: subject
+          ? `Portfolio Contact: ${subject}`
+          : `New Portfolio Message from ${name}`,
+        html: `
+          <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #222;">
+            
+            <h2>New Portfolio Contact Message</h2>
+
+            <p>
+              You received a new message through your portfolio website.
+            </p>
+
+            <hr />
+
+            <p>
+              <strong>Name:</strong> ${name}
+            </p>
+
+            <p>
+              <strong>Email:</strong> ${email}
+            </p>
+
+            <p>
+              <strong>Subject:</strong> ${
+                subject || "No subject"
+              }
+            </p>
+
+            <h3>Message</h3>
+
+            <p>
+              ${message}
+            </p>
+
+            <hr />
+
+            <p>
+              <strong>Reply directly to:</strong> ${email}
+            </p>
+
+          </div>
+        `,
+      });
+    } catch (emailError) {
+      console.error("Email sending failed:", emailError);
+
+      // Message is already safely stored in MongoDB
+      return res.status(201).json({
+        success: true,
+        message:
+          "Message received, but email notification could not be sent.",
+        data: newMessage,
+      });
+    }
+
     res.status(201).json({
       success: true,
       message: "Message sent successfully",
       data: newMessage,
     });
   } catch (error) {
+    console.error("Create message error:", error);
+
     res.status(500).json({
       success: false,
       message: error.message,

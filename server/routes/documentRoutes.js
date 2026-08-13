@@ -6,6 +6,7 @@ import {
   createDocument,
   updateDocument,
   deleteDocument,
+  downloadDocument,
 } from "../controllers/documentController.js";
 
 import { protect } from "../middleware/authMiddleware.js";
@@ -13,12 +14,24 @@ import upload from "../middleware/uploadMiddleware.js";
 
 const router = express.Router();
 
-// Public routes
+// =========================
+// PUBLIC
+// =========================
+
 router.get("/", getDocuments);
+
+router.get(
+  "/:id/download",
+  downloadDocument
+);
 
 router.get("/:id", getDocument);
 
-// Protected routes
+// =========================
+// PROTECTED
+// =========================
+
+// Add document
 router.post(
   "/",
   protect,
@@ -26,6 +39,7 @@ router.post(
   createDocument
 );
 
+// Update document / replace file
 router.put(
   "/:id",
   protect,
@@ -33,6 +47,7 @@ router.put(
   updateDocument
 );
 
+// Delete document
 router.delete(
   "/:id",
   protect,

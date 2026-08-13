@@ -32,13 +32,22 @@ const documentSchema = new mongoose.Schema(
       trim: true,
     },
 
+    // Cloudinary file URL
     url: {
       type: String,
-      required: true,
+      default: "",
     },
 
+    // Cloudinary public ID
     publicId: {
       type: String,
+      default: "",
+    },
+
+    // Store whether uploaded file is image or PDF
+    fileType: {
+      type: String,
+      enum: ["image", "pdf", ""],
       default: "",
     },
   },

@@ -3,6 +3,12 @@ import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
 import Hero from "../components/Hero";
 import Projects from "../components/Projects";
+import About from "../components/About";
+import Skills from "../components/Skills";
+import Experience from "../components/Experience";
+import Education from "../components/Education";
+import Documents from "../components/Documents";
+import Contact from "../components/Contact";
 
 function PortfolioLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -31,8 +37,21 @@ function PortfolioLayout() {
 
         {/* HOME */}
        <Hero />
+
+       <About />
+
+       <Skills />
        
        <Projects />
+
+       <Experience />
+
+       <Education />
+
+       <Documents />
+
+       <Contact />
+
       </main>
 
     </div>

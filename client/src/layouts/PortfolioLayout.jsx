@@ -1,4 +1,5 @@
 import { useState } from "react";
+
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
 import Hero from "../components/Hero";
@@ -9,6 +10,9 @@ import Experience from "../components/Experience";
 import Education from "../components/Education";
 import Documents from "../components/Documents";
 import Contact from "../components/Contact";
+import Rating from "../components/Rating";
+import Footer from "../components/Footer";
+import Resume from "../components/Resume";
 
 function PortfolioLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -18,42 +22,73 @@ function PortfolioLayout() {
   };
 
   return (
-    <div className="min-h-screen bg-white text-gray-900 transition-colors duration-300 dark:bg-[#090909] dark:text-white">
+    <div
+      className="
+        min-h-screen
+        bg-white
+        text-gray-900
+        transition-colors
+        duration-300
 
+        dark:bg-[#090909]
+        dark:text-white
+      "
+    >
+      {/* =========================
+          NAVBAR
+          ========================= */}
       <Navbar
         sidebarOpen={sidebarOpen}
         toggleSidebar={toggleSidebar}
       />
 
+      {/* =========================
+          SIDEBAR
+          ========================= */}
       <Sidebar
         sidebarOpen={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
       />
 
+      {/* =========================
+          MAIN CONTENT
+          ========================= */}
       <main
-        className={`min-h-screen pt-[73px] transition-all duration-300 ${
-          sidebarOpen ? "lg:ml-64" : "ml-0"
-        }`}
+        className={`
+          min-h-screen
+          pt-[73px]
+          transition-all
+          duration-300
+
+          ${
+            sidebarOpen
+              ? "lg:ml-64"
+              : "ml-0"
+          }
+        `}
       >
+        <Hero />
 
-        {/* HOME */}
-       <Hero />
+        <About />
 
-       <About />
+        <Skills />
 
-       <Skills />
-       
-       <Projects />
+        <Projects />
 
-       <Experience />
+        <Experience />
 
-       <Education />
+        <Education />
 
-       <Documents />
+        <Documents />
 
-       <Contact />
+        <Resume />
 
+        <Contact />
+
+        <Rating />
+
+        <Footer />
       </main>
-
     </div>
   );
 }

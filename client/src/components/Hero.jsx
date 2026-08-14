@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Search } from "lucide-react";
+import { Search, X } from "lucide-react";
 import api from "../services/api";
 
 function Hero() {
@@ -7,9 +7,92 @@ function Hero() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  /* =========================================================
-     FETCH PORTFOLIO DATA FROM BACKEND
-     ========================================================= */
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+
+  /*
+  ============================================================
+  SEARCHABLE PORTFOLIO SECTIONS
+  ============================================================
+  */
+
+  const searchableSections = [
+    {
+      id: "home",
+      title: "Home",
+      keywords:
+        "home Sachin Jadaun Sachin Kumar software developer full stack developer portfolio",
+    },
+
+    {
+      id: "about",
+      title: "About",
+      keywords:
+        "about Sachin Jadaun Sachin Kumar computer science engineering developer AKTU",
+    },
+
+    {
+      id: "skills",
+      title: "Skills",
+      keywords:
+        "skills Java JavaScript React Node.js Express MongoDB Spring Boot Spring Java backend frontend full stack HTML CSS Tailwind Git GitHub DSA",
+    },
+
+    {
+      id: "experience",
+      title: "Experience",
+      keywords:
+        "experience internship software developer backend developer frontend developer full stack Java Node React Spring Boot",
+    },
+
+    {
+      id: "projects",
+      title: "Projects",
+      keywords:
+        "projects portfolio Wonderlust Student Management System ecommerce web application full stack React Java Spring Boot Node Express MongoDB",
+    },
+
+    {
+      id: "education",
+      title: "Education",
+      keywords:
+        "education B.Tech Computer Science Engineering AKTU Aligarh College of Engineering and Technology degree graduation",
+    },
+
+    {
+      id: "documents",
+      title: "Achievements & Certificates",
+      keywords:
+        "achievement achievements certificates certification certificate Apna College DSA Web Development credentials awards accomplishments",
+    },
+
+    {
+      id: "resume",
+      title: "Resume / CV",
+      keywords:
+        "resume CV curriculum vitae download resume download cv Sachin Jadaun software developer",
+    },
+
+    {
+      id: "rating",
+      title: "Reviews",
+      keywords:
+        "reviews review rating ratings feedback stars visitor feedback portfolio review",
+    },
+
+    {
+      id: "contact",
+      title: "Contact",
+      keywords:
+        "contact email message reach Sachin Jadaun contact me send message Gmail",
+    },
+  ];
+
+  /*
+  ============================================================
+  FETCH PORTFOLIO
+  ============================================================
+  */
 
   useEffect(() => {
     const fetchPortfolio = async () => {
@@ -32,19 +115,87 @@ function Hero() {
     fetchPortfolio();
   }, []);
 
-  /* =========================================================
-     SEARCH BUTTON
-     ========================================================= */
+  /*
+  ============================================================
+  SEARCH
+  ============================================================
+  */
 
-  const handleSearchClick = () => {
-    document.getElementById("search")?.scrollIntoView({
-      behavior: "smooth",
+  useEffect(() => {
+    const query = searchQuery.trim().toLowerCase();
+
+    if (!query) {
+      setSearchResults([]);
+      return;
+    }
+
+    const results = searchableSections.filter((section) => {
+      return (
+        section.title.toLowerCase().includes(query) ||
+        section.keywords.toLowerCase().includes(query)
+      );
     });
+
+    setSearchResults(results);
+  }, [searchQuery]);
+
+  /*
+  ============================================================
+  GO TO SECTION
+  ============================================================
+  */
+
+  const goToSection = (sectionId) => {
+    const section = document.getElementById(sectionId);
+
+    if (!section) {
+      console.warn(
+        `Section with id "${sectionId}" was not found.`
+      );
+      return;
+    }
+
+    section.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+
+    setSearchQuery("");
+    setSearchResults([]);
   };
 
-  /* =========================================================
-     LOADING STATE
-     ========================================================= */
+  /*
+  ============================================================
+  CLEAR SEARCH
+  ============================================================
+  */
+
+  const clearSearch = () => {
+    setSearchQuery("");
+    setSearchResults([]);
+  };
+
+  /*
+  ============================================================
+  SEARCH BUTTON
+  ============================================================
+  */
+
+  const handleSearchClick = () => {
+    const searchInput = document.getElementById(
+      "portfolio-search-input"
+    );
+
+    if (searchInput) {
+      searchInput.focus();
+    }
+  };
+
+  /*
+  ============================================================
+  LOADING
+  ============================================================
+  */
 
   if (loading) {
     return (
@@ -89,9 +240,11 @@ function Hero() {
     );
   }
 
-  /* =========================================================
-     ERROR STATE
-     ========================================================= */
+  /*
+  ============================================================
+  ERROR
+  ============================================================
+  */
 
   if (error || !portfolio) {
     return (
@@ -120,13 +273,19 @@ function Hero() {
     );
   }
 
+  /*
+  ============================================================
+  MAIN HERO
+  ============================================================
+  */
+
   return (
     <section
       id="home"
       className="
         relative
         min-h-[calc(100vh-73px)]
-        overflow-hidden
+        overflow-visible
 
         bg-[#F3F0E8]
 
@@ -145,9 +304,9 @@ function Hero() {
         dark:bg-[#10100F]
       "
     >
-      {/* =====================================================
+      {/* ======================================================
           BACKGROUND DECORATION
-          ===================================================== */}
+          ====================================================== */}
 
       <div
         className="
@@ -181,9 +340,9 @@ function Hero() {
         "
       />
 
-      {/* =====================================================
+      {/* ======================================================
           MAIN CONTAINER
-          ===================================================== */}
+          ====================================================== */}
 
       <div
         className="
@@ -200,17 +359,15 @@ function Hero() {
             grid
             w-full
             items-center
-
             gap-8
 
             lg:grid-cols-[1.1fr_0.9fr]
             lg:gap-16
           "
         >
-
-          {/* =================================================
+          {/* ==================================================
               PROFILE IMAGE
-              ================================================= */}
+              ================================================== */}
 
           <div
             className="
@@ -223,7 +380,6 @@ function Hero() {
             "
           >
             <div className="relative">
-
               {/* Image glow */}
 
               <div
@@ -300,7 +456,7 @@ function Hero() {
                 )}
               </div>
 
-              {/* Decorative gold ring */}
+              {/* Gold ring */}
 
               <div
                 className="
@@ -326,7 +482,7 @@ function Hero() {
                 "
               />
 
-              {/* Decorative red ring */}
+              {/* Red ring */}
 
               <div
                 className="
@@ -349,23 +505,19 @@ function Hero() {
             </div>
           </div>
 
-          {/* =================================================
+          {/* ==================================================
               CONTENT
-              ================================================= */}
+              ================================================== */}
 
           <div
             className="
               order-2
-
               text-left
 
               lg:order-1
             "
           >
-
-            {/* =================================================
-                DEVELOPER LABEL
-                ================================================= */}
+            {/* Developer label */}
 
             <div
               className="
@@ -412,9 +564,7 @@ function Hero() {
               </span>
             </div>
 
-            {/* =================================================
-                NAME
-                ================================================= */}
+            {/* Name */}
 
             <h1
               className="
@@ -438,9 +588,7 @@ function Hero() {
               {portfolio.fullName}
             </h1>
 
-            {/* =================================================
-                TITLE
-                ================================================= */}
+            {/* Title */}
 
             <div
               className="
@@ -480,9 +628,7 @@ function Hero() {
               </h2>
             </div>
 
-            {/* =================================================
-                BIO
-                ================================================= */}
+            {/* Bio */}
 
             <p
               className="
@@ -506,25 +652,21 @@ function Hero() {
               {portfolio.bio}
             </p>
 
-            {/* =================================================
-                SEARCH BUTTON
-                ================================================= */}
+            {/* ==================================================
+                SEARCH
+                ================================================== */}
 
             <div
               className="
+                relative
                 mt-7
                 w-full
-                
-
                 max-w-xl
 
                 sm:mt-8
               "
             >
-              <button
-                type="button"
-                onClick={handleSearchClick}
-                aria-label="Search portfolio"
+              <div
                 className="
                   group
                   flex
@@ -542,31 +684,21 @@ function Hero() {
                   px-4
                   py-2.5
 
-                  text-left
-
                   shadow-sm
 
                   transition-all
                   duration-300
 
-                  hover:-translate-y-0.5
-                  hover:border-[#A37D1D]/65
-                  hover:shadow-md
-                  hover:shadow-[#B18A22]/10
-
-                  focus:outline-none
-                  focus-visible:ring-2
-                  focus-visible:ring-[#B18A22]/30
+                  focus-within:border-[#A37D1D]/65
+                  focus-within:shadow-md
+                  focus-within:shadow-[#B18A22]/10
 
                   dark:border-[#D6B84C]/30
                   dark:bg-[#181715]
 
-                  dark:hover:border-[#D6B84C]/55
-                  dark:hover:bg-[#1C1B18]
-                  dark:hover:shadow-[#D6B84C]/10
+                  dark:focus-within:border-[#D6B84C]/55
                 "
               >
-
                 {/* Search icon */}
 
                 <span
@@ -584,14 +716,8 @@ function Hero() {
 
                     text-[#80651A]
 
-                    transition-all
-                    duration-300
-
-                    group-hover:bg-[#B18A22]/15
-
                     dark:bg-[#D6B84C]/10
                     dark:text-[#D6B84C]
-                    dark:group-hover:bg-[#D6B84C]/15
                   "
                 >
                   <Search
@@ -600,56 +726,280 @@ function Hero() {
                   />
                 </span>
 
-                {/* Search text */}
+                {/* Input */}
 
-                <span
+                <input
+                  id="portfolio-search-input"
+                  type="text"
+                  value={searchQuery}
+                  onChange={(event) =>
+                    setSearchQuery(event.target.value)
+                  }
+                  onFocus={handleSearchClick}
+                  placeholder="Search portfolio..."
+                  autoComplete="off"
                   className="
                     min-w-0
                     flex-1
-                    truncate
+                    bg-transparent
 
                     text-sm
                     font-medium
 
-                    text-[#77736A]
+                    text-[#35322C]
 
-                    dark:text-[#99958B]
+                    outline-none
+
+                    placeholder:text-[#89857B]
+
+                    dark:text-[#F1EFE8]
+                    dark:placeholder:text-[#77736A]
                   "
-                >
-                  Search portfolio...
-                </span>
+                />
+
+                {/* Clear button */}
+
+                {searchQuery && (
+                  <button
+                    type="button"
+                    onClick={clearSearch}
+                    className="
+                      flex
+                      h-7
+                      w-7
+                      shrink-0
+                      items-center
+                      justify-center
+
+                      rounded-full
+
+                      text-[#77736A]
+
+                      transition
+
+                      hover:bg-[#E9E4D8]
+                      hover:text-[#25231F]
+
+                      dark:hover:bg-[#292722]
+                      dark:hover:text-white
+                    "
+                    aria-label="Clear search"
+                  >
+                    <X size={15} />
+                  </button>
+                )}
 
                 {/* Search label */}
 
-                <span
-                  className="
-                    hidden
+                {!searchQuery && (
+                  <span
+                    className="
+                      hidden
 
-                    rounded-md
+                      rounded-md
+
+                      border
+                      border-[#DED9CB]
+
+                      bg-[#F1EEE6]
+
+                      px-2
+                      py-1
+
+                      text-[10px]
+                      font-medium
+
+                      text-[#89857B]
+
+                      sm:block
+
+                      dark:border-[#302E29]
+                      dark:bg-[#211F1B]
+                      dark:text-[#77736A]
+                    "
+                  >
+                    Search
+                  </span>
+                )}
+              </div>
+
+              {/* =================================================
+                  SEARCH RESULTS
+                  ================================================= */}
+
+              {searchQuery && (
+                <div
+                  className="
+                    absolute
+                    left-0
+                    right-0
+                    top-full
+                    z-50
+                    mt-2
+
+                    overflow-hidden
+
+                    rounded-2xl
 
                     border
-                    border-[#DED9CB]
+                    border-[#D8D1C3]
 
-                    bg-[#F1EEE6]
+                    bg-[#FAF8F2]
 
-                    px-2
-                    py-1
-
-                    text-[10px]
-                    font-medium
-
-                    text-[#89857B]
-
-                    sm:block
+                    shadow-2xl
 
                     dark:border-[#302E29]
-                    dark:bg-[#211F1B]
-                    dark:text-[#77736A]
+                    dark:bg-[#181715]
                   "
                 >
-                  Search
-                </span>
-              </button>
+                  {searchResults.length > 0 ? (
+                    <div className="max-h-72 overflow-y-auto p-2">
+                      <p
+                        className="
+                          px-3
+                          pb-2
+                          pt-1
+
+                          text-[10px]
+                          font-semibold
+                          uppercase
+                          tracking-[0.16em]
+
+                          text-[#927016]
+
+                          dark:text-[#D6B84C]
+                        "
+                      >
+                        Search Results
+                      </p>
+
+                      {searchResults.map((result) => (
+                        <button
+                          key={result.id + result.title}
+                          type="button"
+                          onClick={() =>
+                            goToSection(result.id)
+                          }
+                          className="
+                            flex
+                            w-full
+                            items-center
+                            gap-3
+
+                            rounded-xl
+
+                            px-3
+                            py-3
+
+                            text-left
+
+                            transition-all
+
+                            hover:bg-[#EEE8DA]
+
+                            dark:hover:bg-[#24221E]
+                          "
+                        >
+                          <span
+                            className="
+                              flex
+                              h-9
+                              w-9
+                              shrink-0
+                              items-center
+                              justify-center
+
+                              rounded-lg
+
+                              bg-[#E9E0CA]
+
+                              text-sm
+                              text-[#806510]
+
+                              dark:bg-[#2A251B]
+                              dark:text-[#D6B84C]
+                            "
+                          >
+                            <Search size={15} />
+                          </span>
+
+                          <span className="min-w-0">
+                            <span
+                              className="
+                                block
+                                truncate
+
+                                text-sm
+                                font-semibold
+
+                                text-[#302D27]
+
+                                dark:text-[#F1EFE8]
+                              "
+                            >
+                              {result.title}
+                            </span>
+
+                            <span
+                              className="
+                                mt-0.5
+                                block
+                                text-xs
+
+                                text-[#817B71]
+
+                                dark:text-[#918C83]
+                              "
+                            >
+                              Go to this section
+                            </span>
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="px-5 py-6 text-center">
+                      <Search
+                        size={22}
+                        className="
+                          mx-auto
+                          mb-2
+                          text-[#A39D91]
+
+                          dark:text-[#69655E]
+                        "
+                      />
+
+                      <p
+                        className="
+                          text-sm
+                          font-medium
+
+                          text-[#5F5B53]
+
+                          dark:text-[#A6A198]
+                        "
+                      >
+                        No matching section found
+                      </p>
+
+                      <p
+                        className="
+                          mt-1
+                          text-xs
+
+                          text-[#8A857B]
+
+                          dark:text-[#706C64]
+                        "
+                      >
+                        Try Java, React, projects, resume,
+                        certificates, or contact.
+                      </p>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         </div>

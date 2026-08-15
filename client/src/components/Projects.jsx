@@ -5,6 +5,10 @@ function Projects() {
   const [projects, setProjects] = useState([]);
   const [selectedMedia, setSelectedMedia] = useState({});
 
+  // ==========================================
+  // FETCH PROJECTS
+  // ==========================================
+
   useEffect(() => {
     const fetchProjects = async () => {
       try {
@@ -43,6 +47,7 @@ function Projects() {
         bg-[#E9E4D8]
         px-5
         py-20
+
         transition-colors
         duration-300
 
@@ -67,6 +72,7 @@ function Projects() {
               font-semibold
               uppercase
               tracking-[0.2em]
+
               text-[#927016]
 
               dark:text-[#D6B84C]
@@ -79,6 +85,7 @@ function Projects() {
             className="
               text-3xl
               font-bold
+
               text-[#211F1B]
 
               sm:text-4xl
@@ -93,8 +100,10 @@ function Projects() {
             className="
               mt-4
               max-w-2xl
+
               text-sm
               leading-7
+
               text-[#6D6960]
 
               sm:text-base
@@ -167,6 +176,9 @@ function Projects() {
               <div
                 key={project._id}
                 className="
+                  flex
+                  flex-col
+
                   overflow-hidden
                   rounded-2xl
 
@@ -218,6 +230,7 @@ function Projects() {
                       className="
                         w-full
                         overflow-hidden
+
                         bg-[#DDD6C8]
 
                         dark:bg-[#24221E]
@@ -361,7 +374,14 @@ function Projects() {
                     PROJECT CONTENT
                     ========================= */}
 
-                <div className="p-6">
+                <div
+                  className="
+                    flex
+                    flex-1
+                    flex-col
+                    p-6
+                  "
+                >
 
                   {/* =========================
                       FEATURED
@@ -423,6 +443,7 @@ function Projects() {
                   <p
                     className="
                       mt-3
+
                       text-sm
                       leading-6
 
@@ -486,7 +507,7 @@ function Projects() {
 
                   <div
                     className="
-                      mt-6
+                      mt-auto
 
                       flex
                       items-end

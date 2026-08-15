@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import api from "../services/api";
 
 function Rating() {
   const [ratings, setRatings] = useState([]);
@@ -20,23 +21,28 @@ function Rating() {
 
   const [alreadyRated, setAlreadyRated] = useState(false);
 
-  const API_URL = "http://localhost:5000/api/ratings";
-
   // ==========================================
-  // Generate/Get Visitor ID
+  // Generate / Get Visitor ID
   // ==========================================
 
   const getVisitorId = () => {
-    let visitorId = localStorage.getItem("portfolioVisitorId");
+    let visitorId = localStorage.getItem(
+      "portfolioVisitorId"
+    );
 
     if (!visitorId) {
       visitorId =
         "visitor-" +
         Date.now() +
         "-" +
-        Math.random().toString(36).substring(2, 10);
+        Math.random()
+          .toString(36)
+          .substring(2, 10);
 
-      localStorage.setItem("portfolioVisitorId", visitorId);
+      localStorage.setItem(
+        "portfolioVisitorId",
+        visitorId
+      );
     }
 
     return visitorId;
@@ -47,7 +53,9 @@ function Rating() {
   // ==========================================
 
   useEffect(() => {
-    const hasRated = localStorage.getItem("portfolioHasRated");
+    const hasRated = localStorage.getItem(
+      "portfolioHasRated"
+    );
 
     if (hasRated === "true") {
       setAlreadyRated(true);
@@ -65,22 +73,31 @@ function Rating() {
       setFetching(true);
       setError("");
 
-      const response = await fetch(API_URL);
+      const response = await api.get("/ratings");
 
-      if (!response.ok) {
-        throw new Error("Failed to fetch ratings");
-      }
+      const data = response.data;
 
-      const data = await response.json();
+      console.log("Ratings:", data);
 
       if (data.success) {
         setRatings(data.ratings || []);
         setAverageRating(data.averageRating || 0);
         setTotalRatings(data.totalRatings || 0);
+      } else {
+        setRatings([]);
+        setAverageRating(0);
+        setTotalRatings(0);
       }
     } catch (error) {
-      console.error("Rating fetch error:", error);
-      setError("Unable to load reviews right now.");
+      console.error(
+        "Rating fetch error:",
+        error
+      );
+
+      setError(
+        error.response?.data?.message ||
+          "Unable to load reviews right now."
+      );
     } finally {
       setFetching(false);
     }
@@ -101,7 +118,9 @@ function Rating() {
     setError("");
 
     if (alreadyRated) {
-      setError("You have already submitted a review.");
+      setError(
+        "You have already submitted a review."
+      );
       return;
     }
 
@@ -130,29 +149,24 @@ function Rating() {
 
       const visitorId = getVisitorId();
 
-      const response = await fetch(API_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
+      const response = await api.post(
+        "/ratings",
+        {
           visitorId,
           rating,
           name: name.trim(),
           email: email.trim(),
           description: description.trim(),
-        }),
-      });
+        }
+      );
 
-      const data = await response.json();
+      const data = response.data;
 
-      if (!response.ok) {
-        throw new Error(
-          data.message || "Failed to submit rating"
-        );
-      }
+      console.log("Rating submit response:", data);
 
-      setMessage("Thank you for your feedback!");
+      setMessage(
+        "Thank you for your feedback!"
+      );
 
       setName("");
       setEmail("");
@@ -160,13 +174,24 @@ function Rating() {
       setRating(0);
       setHoverRating(0);
 
-      localStorage.setItem("portfolioHasRated", "true");
+      localStorage.setItem(
+        "portfolioHasRated",
+        "true"
+      );
+
       setAlreadyRated(true);
 
       await fetchRatings();
     } catch (error) {
-      console.error("Rating submit error:", error);
-      setError(error.message || "Unable to submit your review.");
+      console.error(
+        "Rating submit error:",
+        error
+      );
+
+      setError(
+        error.response?.data?.message ||
+          "Unable to submit your review."
+      );
     } finally {
       setLoading(false);
     }
@@ -176,13 +201,20 @@ function Rating() {
   // Render Stars
   // ==========================================
 
-  const renderStars = (value, interactive = false) => {
+  const renderStars = (
+    value,
+    interactive = false
+  ) => {
     return (
       <div className="flex items-center gap-1">
         {[1, 2, 3, 4, 5].map((star) => (
           <button
             key={star}
-            type={interactive ? "button" : undefined}
+            type={
+              interactive
+                ? "button"
+                : undefined
+            }
             disabled={!interactive}
             onClick={
               interactive
@@ -255,7 +287,7 @@ function Rating() {
 
         {/* =====================================
             SECTION HEADING
-            ===================================== */}
+        ===================================== */}
 
         <div className="mb-12">
 
@@ -301,14 +333,14 @@ function Rating() {
               dark:text-[#A6A198]
             "
           >
-            Your feedback helps me improve my portfolio
-            and showcase better work.
+            Your feedback helps me improve my
+            portfolio and showcase better work.
           </p>
         </div>
 
         {/* =====================================
             SUMMARY + FORM
-            ===================================== */}
+        ===================================== */}
 
         <div
           className="
@@ -321,7 +353,7 @@ function Rating() {
 
           {/* =====================================
               RATING SUMMARY
-              ===================================== */}
+          ===================================== */}
 
           <div
             className="
@@ -410,7 +442,7 @@ function Rating() {
 
           {/* =====================================
               REVIEW FORM
-              ===================================== */}
+          ===================================== */}
 
           <div
             className="
@@ -500,7 +532,10 @@ function Rating() {
                     Your Rating
                   </label>
 
-                  {renderStars(rating, true)}
+                  {renderStars(
+                    rating,
+                    true
+                  )}
                 </div>
 
                 {/* Name + Email */}
@@ -514,6 +549,8 @@ function Rating() {
                     sm:grid-cols-2
                   "
                 >
+
+                  {/* Name */}
 
                   <div>
                     <label
@@ -534,7 +571,9 @@ function Rating() {
                       type="text"
                       value={name}
                       onChange={(e) =>
-                        setName(e.target.value)
+                        setName(
+                          e.target.value
+                        )
                       }
                       placeholder="Your name"
                       className="
@@ -560,6 +599,8 @@ function Rating() {
                     />
                   </div>
 
+                  {/* Email */}
+
                   <div>
                     <label
                       className="
@@ -579,7 +620,9 @@ function Rating() {
                       type="email"
                       value={email}
                       onChange={(e) =>
-                        setEmail(e.target.value)
+                        setEmail(
+                          e.target.value
+                        )
                       }
                       placeholder="your@email.com"
                       className="
@@ -627,7 +670,9 @@ function Rating() {
                   <textarea
                     value={description}
                     onChange={(e) =>
-                      setDescription(e.target.value)
+                      setDescription(
+                        e.target.value
+                      )
                     }
                     placeholder="Write your feedback..."
                     rows={5}
@@ -752,11 +797,18 @@ function Rating() {
 
         {/* =====================================
             REVIEWS
-            ===================================== */}
+        ===================================== */}
 
         <div className="mt-12">
 
-          <div className="mb-6 flex items-center justify-between">
+          <div
+            className="
+              mb-6
+              flex
+              items-center
+              justify-between
+            "
+          >
 
             <h3
               className="
@@ -788,6 +840,8 @@ function Rating() {
             )}
           </div>
 
+          {/* Loading */}
+
           {fetching ? (
             <div
               className="
@@ -815,6 +869,9 @@ function Rating() {
               </p>
             </div>
           ) : ratings.length > 0 ? (
+
+            /* Reviews */
+
             <div
               className="
                 grid
@@ -847,7 +904,9 @@ function Rating() {
 
                   {/* Stars */}
 
-                  {renderStars(item.rating)}
+                  {renderStars(
+                    item.rating
+                  )}
 
                   {/* Name */}
 
@@ -861,7 +920,8 @@ function Rating() {
                       dark:text-[#F1EFE8]
                     "
                   >
-                    {item.name || "Anonymous"}
+                    {item.name ||
+                      "Anonymous"}
                   </h4>
 
                   {/* Review */}
@@ -908,7 +968,11 @@ function Rating() {
                 </div>
               ))}
             </div>
+
           ) : (
+
+            /* Empty State */
+
             <div
               className="
                 rounded-2xl

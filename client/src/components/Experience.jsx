@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import api from "../services/api";
 
 function Experience() {
   const [experiences, setExperiences] = useState([]);
@@ -7,23 +8,15 @@ function Experience() {
   useEffect(() => {
     const fetchExperiences = async () => {
       try {
-        const response = await fetch(
-          "http://localhost:5000/api/experience"
-        );
+        const response = await api.get("/experience");
 
-        if (!response.ok) {
-          throw new Error("Failed to fetch experiences");
-        }
-
-        const data = await response.json();
-
-        console.log("Experiences:", data);
+        console.log("Experiences:", response.data);
 
         if (
-          data.success &&
-          Array.isArray(data.experiences)
+          response.data.success &&
+          Array.isArray(response.data.experiences)
         ) {
-          setExperiences(data.experiences);
+          setExperiences(response.data.experiences);
         }
       } catch (error) {
         console.error(

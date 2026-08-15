@@ -1,4 +1,29 @@
+import { useEffect, useState } from "react";
+import api from "../services/api";
+
 function About() {
+  const [portfolio, setPortfolio] = useState(null);
+
+  // ==========================================
+  // GET PORTFOLIO DATA
+  // ==========================================
+
+  useEffect(() => {
+    const fetchPortfolio = async () => {
+      try {
+        const response = await api.get("/portfolio");
+
+        if (response.data.success) {
+          setPortfolio(response.data.portfolio);
+        }
+      } catch (error) {
+        console.error("Portfolio fetch error:", error);
+      }
+    };
+
+    fetchPortfolio();
+  }, []);
+
   return (
     <section
       id="about"
@@ -52,7 +77,8 @@ function About() {
               dark:text-[#F1EFE8]
             "
           >
-            Web Developer focused on
+            {portfolio?.title || "Web Developer focused on"}
+
             <span className="block">
               building practical software.
             </span>
@@ -104,9 +130,8 @@ function About() {
                 dark:text-[#C0BBB2]
               "
             >
-              I am a fourth-year Computer Science and Engineering
-              student and a web developer who enjoys building
-              complete, practical web applications.
+              {portfolio?.bio ||
+                "I am a Computer Science and Engineering student and a web developer who enjoys building complete, practical web applications."}
             </p>
 
             <p

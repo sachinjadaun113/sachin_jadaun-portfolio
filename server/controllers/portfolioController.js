@@ -1,7 +1,10 @@
 import Portfolio from "../models/Portfolio.js";
 import uploadToCloudinary from "../utils/uploadToCloudinary.js";
 
-// Get portfolio
+// ==========================================
+// GET PORTFOLIO
+// ==========================================
+
 export const getPortfolio = async (req, res) => {
   try {
     const portfolio = await Portfolio.findOne();
@@ -18,6 +21,8 @@ export const getPortfolio = async (req, res) => {
       portfolio,
     });
   } catch (error) {
+    console.error("Get portfolio error:", error);
+
     res.status(500).json({
       success: false,
       message: error.message,
@@ -25,7 +30,10 @@ export const getPortfolio = async (req, res) => {
   }
 };
 
-// Create portfolio
+// ==========================================
+// CREATE PORTFOLIO
+// ==========================================
+
 export const createPortfolio = async (req, res) => {
   try {
     const existingPortfolio = await Portfolio.findOne();
@@ -41,7 +49,10 @@ export const createPortfolio = async (req, res) => {
     let resumeUrl = "";
     let cvUrl = "";
 
-    // Upload profile image
+    // ==========================================
+    // PROFILE IMAGE
+    // ==========================================
+
     if (req.files?.profileImage?.[0]) {
       const file = req.files.profileImage[0];
 
@@ -54,7 +65,10 @@ export const createPortfolio = async (req, res) => {
       profileImage = result.secure_url;
     }
 
-    // Upload resume PDF
+    // ==========================================
+    // RESUME PDF
+    // ==========================================
+
     if (req.files?.resume?.[0]) {
       const file = req.files.resume[0];
 
@@ -74,7 +88,10 @@ export const createPortfolio = async (req, res) => {
       resumeUrl = result.secure_url;
     }
 
-    // Upload CV PDF
+    // ==========================================
+    // CV PDF
+    // ==========================================
+
     if (req.files?.cv?.[0]) {
       const file = req.files.cv[0];
 
@@ -94,6 +111,10 @@ export const createPortfolio = async (req, res) => {
       cvUrl = result.secure_url;
     }
 
+    // ==========================================
+    // CREATE PORTFOLIO
+    // ==========================================
+
     const portfolio = await Portfolio.create({
       ...req.body,
       profileImage,
@@ -107,6 +128,8 @@ export const createPortfolio = async (req, res) => {
       portfolio,
     });
   } catch (error) {
+    console.error("Create portfolio error:", error);
+
     res.status(500).json({
       success: false,
       message: error.message,
@@ -114,7 +137,10 @@ export const createPortfolio = async (req, res) => {
   }
 };
 
-// Update portfolio
+// ==========================================
+// UPDATE PORTFOLIO
+// ==========================================
+
 export const updatePortfolio = async (req, res) => {
   try {
     const { id } = req.params;
@@ -128,7 +154,10 @@ export const updatePortfolio = async (req, res) => {
       });
     }
 
-    // Upload new profile image
+    // ==========================================
+    // UPDATE PROFILE IMAGE
+    // ==========================================
+
     if (req.files?.profileImage?.[0]) {
       const file = req.files.profileImage[0];
 
@@ -141,7 +170,10 @@ export const updatePortfolio = async (req, res) => {
       portfolio.profileImage = result.secure_url;
     }
 
-    // Upload new resume
+    // ==========================================
+    // UPDATE RESUME PDF
+    // ==========================================
+
     if (req.files?.resume?.[0]) {
       const file = req.files.resume[0];
 
@@ -161,7 +193,10 @@ export const updatePortfolio = async (req, res) => {
       portfolio.resumeUrl = result.secure_url;
     }
 
-    // Upload new CV
+    // ==========================================
+    // UPDATE CV PDF
+    // ==========================================
+
     if (req.files?.cv?.[0]) {
       const file = req.files.cv[0];
 
@@ -181,10 +216,17 @@ export const updatePortfolio = async (req, res) => {
       portfolio.cvUrl = result.secure_url;
     }
 
-    // Update normal fields
+    // ==========================================
+    // UPDATE NORMAL FIELDS
+    // ==========================================
+
     Object.keys(req.body).forEach((key) => {
       portfolio[key] = req.body[key];
     });
+
+    // ==========================================
+    // SAVE
+    // ==========================================
 
     await portfolio.save();
 
@@ -194,6 +236,8 @@ export const updatePortfolio = async (req, res) => {
       portfolio,
     });
   } catch (error) {
+    console.error("Update portfolio error:", error);
+
     res.status(500).json({
       success: false,
       message: error.message,

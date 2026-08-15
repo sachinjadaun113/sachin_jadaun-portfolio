@@ -71,16 +71,10 @@ export const createDocument = async (req, res) => {
       date,
     } = req.body;
 
-    console.log(
-      "========== CREATE DOCUMENT =========="
-    );
-
+    console.log("========== CREATE DOCUMENT ==========");
     console.log("BODY:", req.body);
     console.log("FILE:", req.file);
-
-    console.log(
-      "====================================="
-    );
+    console.log("=====================================");
 
     // =================================================
     // REQUIRED FIELDS
@@ -128,7 +122,6 @@ export const createDocument = async (req, res) => {
       const isImage =
         req.file.mimetype.startsWith("image/");
 
-      // Only PDF and images
       if (!isPdf && !isImage) {
         return res.status(400).json({
           success: false,
@@ -137,31 +130,31 @@ export const createDocument = async (req, res) => {
         });
       }
 
-      /*
-       * Upload both PDF and image using Cloudinary
-       * image resource type.
-       *
-       * This is kept because your current PDF
-       * viewing is already working.
-       */
+      // IMPORTANT:
+      // PDF  -> raw
+      // Image -> image
+
+      const resourceType = isPdf
+        ? "raw"
+        : "image";
 
       const result = await uploadToCloudinary(
         req.file.buffer,
         "portfolio/documents",
-        "image"
+        resourceType
       );
 
       url = result.secure_url;
       publicId = result.public_id;
 
-      fileType = isPdf ? "pdf" : "image";
+      fileType = isPdf
+        ? "pdf"
+        : "image";
 
-      console.log(
-        "Uploaded document:"
-      );
-
+      console.log("Uploaded document:");
       console.log("URL:", url);
       console.log("PUBLIC ID:", publicId);
+      console.log("RESOURCE TYPE:", resourceType);
       console.log("FILE TYPE:", fileType);
     }
 
@@ -209,7 +202,9 @@ export const createDocument = async (req, res) => {
 
 export const downloadDocument = async (req, res) => {
   try {
-    const document = await Document.findById(req.params.id);
+    const document = await Document.findById(
+      req.params.id
+    );
 
     if (!document) {
       return res.status(404).json({
@@ -226,27 +221,38 @@ export const downloadDocument = async (req, res) => {
     }
 
     // =================================================
-    // CREATE CLOUDINARY DOWNLOAD URL
+    // IMAGE
     // =================================================
 
-    const downloadUrl = document.url.replace(
-      "/upload/",
-      `/upload/fl_attachment:${encodeURIComponent(
-        document.title || "document"
-      )}/`
-    );
-
-    console.log("Original URL:");
-    console.log(document.url);
-
-    console.log("Download URL:");
-    console.log(downloadUrl);
+    if (document.fileType === "image") {
+      return res.redirect(document.url);
+    }
 
     // =================================================
-    // REDIRECT TO CLOUDINARY
+    // PDF
     // =================================================
 
-    return res.redirect(downloadUrl);
+    if (document.fileType === "pdf") {
+      const downloadUrl = document.url.replace(
+        "/upload/",
+        `/upload/fl_attachment:${encodeURIComponent(
+          document.title || "certificate"
+        )}/`
+      );
+
+      console.log(
+        "PDF download URL:",
+        downloadUrl
+      );
+
+      return res.redirect(downloadUrl);
+    }
+
+    // =================================================
+    // FALLBACK
+    // =================================================
+
+    return res.redirect(document.url);
   } catch (error) {
     console.error(
       "Download document error:",
@@ -271,9 +277,7 @@ export const updateDocument = async (
 ) => {
   try {
     const document =
-      await Document.findById(
-        req.params.id
-      );
+      await Document.findById(req.params.id);
 
     if (!document) {
       return res.status(404).json({
@@ -287,8 +291,7 @@ export const updateDocument = async (
     // =================================================
 
     if (req.body.title !== undefined) {
-      document.title =
-        req.body.title;
+      document.title = req.body.title;
     }
 
     // =================================================
@@ -303,29 +306,22 @@ export const updateDocument = async (
       ];
 
       if (
-        !allowedTypes.includes(
-          req.body.type
-        )
+        !allowedTypes.includes(req.body.type)
       ) {
         return res.status(400).json({
           success: false,
-          message:
-            "Invalid document type",
+          message: "Invalid document type",
         });
       }
 
-      document.type =
-        req.body.type;
+      document.type = req.body.type;
     }
 
     // =================================================
     // UPDATE DESCRIPTION
     // =================================================
 
-    if (
-      req.body.description !==
-      undefined
-    ) {
+    if (req.body.description !== undefined) {
       document.description =
         req.body.description;
     }
@@ -335,8 +331,7 @@ export const updateDocument = async (
     // =================================================
 
     if (req.body.issuer !== undefined) {
-      document.issuer =
-        req.body.issuer;
+      document.issuer = req.body.issuer;
     }
 
     // =================================================
@@ -344,8 +339,7 @@ export const updateDocument = async (
     // =================================================
 
     if (req.body.date !== undefined) {
-      document.date =
-        req.body.date;
+      document.date = req.body.date;
     }
 
     // =================================================
@@ -365,10 +359,6 @@ export const updateDocument = async (
           "image/"
         );
 
-      // =================================================
-      // VALIDATE FILE
-      // =================================================
-
       if (!isPdf && !isImage) {
         return res.status(400).json({
           success: false,
@@ -377,15 +367,19 @@ export const updateDocument = async (
         });
       }
 
-      // =================================================
-      // UPLOAD NEW FILE
-      // =================================================
+      // IMPORTANT:
+      // PDF  -> raw
+      // Image -> image
+
+      const resourceType = isPdf
+        ? "raw"
+        : "image";
 
       const result =
         await uploadToCloudinary(
           req.file.buffer,
           "portfolio/documents",
-          "image"
+          resourceType
         );
 
       document.url =
@@ -409,6 +403,11 @@ export const updateDocument = async (
       console.log(
         "PUBLIC ID:",
         document.publicId
+      );
+
+      console.log(
+        "RESOURCE TYPE:",
+        resourceType
       );
 
       console.log(
@@ -468,10 +467,6 @@ export const deleteDocument = async (
         message: "Document not found",
       });
     }
-
-    // =================================================
-    // DELETE DATABASE DOCUMENT
-    // =================================================
 
     await Document.findByIdAndDelete(
       req.params.id

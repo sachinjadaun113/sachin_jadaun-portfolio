@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import api from "../services/api";
 
 function Education() {
   const [educations, setEducations] = useState([]);
@@ -6,20 +7,15 @@ function Education() {
   useEffect(() => {
     const fetchEducations = async () => {
       try {
-        const response = await fetch(
-          "http://localhost:5000/api/education"
-        );
+        const response = await api.get("/education");
 
-        if (!response.ok) {
-          throw new Error("Failed to fetch education");
-        }
+        console.log("Education API response:", response.data);
 
-        const data = await response.json();
-
-        console.log("Education API response:", data);
-
-        if (data.success && Array.isArray(data.educations)) {
-          setEducations(data.educations);
+        if (
+          response.data.success &&
+          Array.isArray(response.data.educations)
+        ) {
+          setEducations(response.data.educations);
         } else {
           setEducations([]);
         }

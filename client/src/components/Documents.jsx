@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import api from "../services/api";
 
 function Documents() {
   const [documents, setDocuments] = useState([]);
@@ -11,15 +12,9 @@ function Documents() {
   useEffect(() => {
     const fetchDocuments = async () => {
       try {
-        const response = await fetch(
-          "http://localhost:5000/api/documents"
-        );
+        const response = await api.get("/documents");
 
-        if (!response.ok) {
-          throw new Error("Failed to fetch documents");
-        }
-
-        const data = await response.json();
+        const data = response.data;
 
         console.log("Documents API response:", data);
 
@@ -236,6 +231,9 @@ function Documents() {
                   <div
                     key={document._id}
                     className="
+                      flex
+                      h-full
+                      flex-col
                       overflow-hidden
                       rounded-2xl
 
@@ -386,7 +384,6 @@ function Documents() {
                           group-hover:bg-black/40
                         "
                       >
-
                         <span
                           className="
                             rounded-full
@@ -411,7 +408,6 @@ function Documents() {
                         >
                           Click to View
                         </span>
-
                       </div>
 
                     </button>
@@ -420,7 +416,7 @@ function Documents() {
                         DOCUMENT CONTENT
                         ===================================== */}
 
-                    <div className="p-6">
+                    <div className="flex flex-1 flex-col p-6">
 
                       {/* TYPE */}
 
@@ -537,11 +533,9 @@ function Documents() {
                       {document.url && (
                         <div
                           className="
-                            mt-6
-
+                            mt-auto
                             border-t
                             border-[#DDD6C9]
-
                             pt-5
 
                             dark:border-[#302D28]
@@ -835,9 +829,6 @@ function Documents() {
 
                 {/* =========================================
                     PDF DOCUMENT
-
-                    We show the first page as an image.
-                    No browser PDF viewer is used.
                     ========================================= */}
 
                 {selectedDocument.fileType ===

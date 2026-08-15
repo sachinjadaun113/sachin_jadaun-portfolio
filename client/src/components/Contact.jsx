@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import api from "../services/api";
 
 function Contact() {
   const [formData, setFormData] = useState({
@@ -8,9 +9,31 @@ function Contact() {
     message: "",
   });
 
+  const [portfolio, setPortfolio] = useState(null);
+
   const [loading, setLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+
+  // ==========================================
+  // GET PORTFOLIO CONTACT INFORMATION
+  // ==========================================
+
+  useEffect(() => {
+    const fetchPortfolio = async () => {
+      try {
+        const response = await api.get("/portfolio");
+
+        if (response.data.success) {
+          setPortfolio(response.data.portfolio);
+        }
+      } catch (error) {
+        console.error("Portfolio fetch error:", error);
+      }
+    };
+
+    fetchPortfolio();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -46,27 +69,18 @@ function Contact() {
     try {
       setLoading(true);
 
-      const response = await fetch(
-        "http://localhost:5000/api/messages",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            name: formData.name.trim(),
-            email: formData.email.trim(),
-            subject: formData.subject.trim(),
-            message: formData.message.trim(),
-          }),
-        }
-      );
+      const response = await api.post("/messages", {
+        name: formData.name.trim(),
+        email: formData.email.trim(),
+        subject: formData.subject.trim(),
+        message: formData.message.trim(),
+      });
 
-      const data = await response.json();
+      const data = response.data;
 
       console.log("Message API response:", data);
 
-      if (!response.ok || !data.success) {
+      if (!data.success) {
         throw new Error(
           data.message || "Failed to send message."
         );
@@ -86,7 +100,8 @@ function Contact() {
       console.error("Contact form error:", error);
 
       setErrorMessage(
-        error.message ||
+        error.response?.data?.message ||
+          error.message ||
           "Something went wrong. Please try again."
       );
     } finally {
@@ -242,7 +257,11 @@ function Contact() {
                 </p>
 
                 <a
-                  href="mailto:your-email@gmail.com"
+                  href={
+                    portfolio?.email
+                      ? `mailto:${portfolio.email}`
+                      : "#"
+                  }
                   className="
                     mt-1
                     inline-block
@@ -256,7 +275,47 @@ function Contact() {
                     dark:hover:text-[#D6B84C]
                   "
                 >
-                  sachinjadaun99977@gmail.com
+                  {portfolio?.email || "Loading..."}
+                </a>
+              </div>
+
+              {/* PHONE */}
+
+              <div>
+                <p
+                  className="
+                    text-xs
+                    font-semibold
+                    uppercase
+                    tracking-wider
+                    text-[#927016]
+
+                    dark:text-[#D6B84C]
+                  "
+                >
+                  Contact
+                </p>
+
+                <a
+                  href={
+                    portfolio?.phone
+                      ? `tel:${portfolio.phone}`
+                      : "#"
+                  }
+                  className="
+                    mt-1
+                    inline-block
+                    break-all
+                    text-sm
+                    text-[#4F4A42]
+                    transition-colors
+                    hover:text-[#927016]
+
+                    dark:text-[#C9C4BA]
+                    dark:hover:text-[#D6B84C]
+                  "
+                >
+                  {portfolio?.phone || "Loading..."}
                 </a>
               </div>
 

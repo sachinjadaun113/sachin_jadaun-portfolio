@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import {
   LayoutDashboard,
   FolderKanban,
+  User,
   Code2,
   BriefcaseBusiness,
   GraduationCap,
@@ -16,7 +17,15 @@ import {
 import toast from "react-hot-toast";
 import api from "../services/api";
 
+
 const managementItems = [
+  {
+    title: "Portfolio",
+    description:
+      "Update your personal information, bio, profile image and social links.",
+    icon: User,
+    path: "/owner/portfolio",
+  },
   {
     title: "Projects",
     description: "Create, update and delete your portfolio projects.",
@@ -51,13 +60,13 @@ const managementItems = [
     title: "Achievements",
     description: "Manage your achievements and accomplishments.",
     icon: Award,
-    path: "/owner/achievements",
+    path: "/owner/certificates",
   },
   {
     title: "Resume / CV",
     description: "Manage your downloadable resume.",
     icon: FileText,
-    path: "/owner/resume",
+    path: "/owner/portfolio",
   },
   {
     title: "Reviews",

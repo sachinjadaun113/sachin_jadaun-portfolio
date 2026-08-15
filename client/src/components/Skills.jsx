@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import api from "../services/api";
 
 function Skills() {
   const [skills, setSkills] = useState([]);
@@ -7,20 +8,15 @@ function Skills() {
   useEffect(() => {
     const fetchSkills = async () => {
       try {
-        const response = await fetch(
-          "http://localhost:5000/api/skills"
-        );
+        const response = await api.get("/skills");
 
-        if (!response.ok) {
-          throw new Error("Failed to fetch skills");
-        }
+        console.log("Skills:", response.data);
 
-        const data = await response.json();
-
-        console.log("Skills:", data);
-
-        if (data.success && Array.isArray(data.skills)) {
-          setSkills(data.skills);
+        if (
+          response.data.success &&
+          Array.isArray(response.data.skills)
+        ) {
+          setSkills(response.data.skills);
         }
       } catch (error) {
         console.error("Skills fetch error:", error);
@@ -51,9 +47,7 @@ function Skills() {
     >
       <div className="mx-auto max-w-7xl">
 
-        {/* =========================
-            SECTION HEADER
-            ========================= */}
+        {/* SECTION HEADER */}
 
         <div className="mb-12">
           <p
@@ -106,9 +100,7 @@ function Skills() {
           </p>
         </div>
 
-        {/* =========================
-            LOADING
-            ========================= */}
+        {/* LOADING */}
 
         {loading && (
           <div
@@ -137,9 +129,7 @@ function Skills() {
           </div>
         )}
 
-        {/* =========================
-            SKILLS
-            ========================= */}
+        {/* SKILLS */}
 
         {!loading && skills.length > 0 && (
           <div
@@ -178,13 +168,13 @@ function Skills() {
                   dark:hover:border-[#D6B84C]/40
                 "
               >
-                {/* =========================
-                    TOP
-                    ========================= */}
+
+                {/* TOP */}
 
                 <div className="flex items-start justify-between gap-4">
 
                   {/* ICON */}
+
                   <div
                     className="
                       flex
@@ -259,9 +249,7 @@ function Skills() {
                   </span>
                 </div>
 
-                {/* =========================
-                    SKILL NAME
-                    ========================= */}
+                {/* NAME */}
 
                 <h3
                   className="
@@ -276,9 +264,7 @@ function Skills() {
                   {skill.name}
                 </h3>
 
-                {/* =========================
-                    CATEGORY
-                    ========================= */}
+                {/* CATEGORY */}
 
                 <div className="mt-3">
                   <span
@@ -300,9 +286,7 @@ function Skills() {
           </div>
         )}
 
-        {/* =========================
-            EMPTY STATE
-            ========================= */}
+        {/* EMPTY STATE */}
 
         {!loading && skills.length === 0 && (
           <div

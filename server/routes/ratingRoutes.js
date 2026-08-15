@@ -22,4 +22,4 @@ router.get("/:id", protect, getRating);
 
 router.delete("/:id", protect, deleteRating);
 
-export default router;
+export default router;  

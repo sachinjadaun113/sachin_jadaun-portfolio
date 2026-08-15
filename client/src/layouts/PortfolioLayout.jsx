@@ -26,6 +26,8 @@ function PortfolioLayout() {
       className="
         min-h-screen
         bg-white
+        w-full
+        overflow-x-hidden
         text-gray-900
         transition-colors
         duration-300

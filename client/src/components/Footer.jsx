@@ -1,5 +1,30 @@
+import { useEffect, useState } from "react";
+import api from "../services/api";
+
 function Footer() {
   const currentYear = new Date().getFullYear();
+
+  const [portfolio, setPortfolio] = useState(null);
+
+  // ==========================================
+  // FETCH PORTFOLIO
+  // ==========================================
+
+  useEffect(() => {
+    const fetchPortfolio = async () => {
+      try {
+        const response = await api.get("/portfolio");
+
+        if (response.data.success) {
+          setPortfolio(response.data.portfolio);
+        }
+      } catch (error) {
+        console.error("Footer portfolio fetch error:", error);
+      }
+    };
+
+    fetchPortfolio();
+  }, []);
 
   return (
     <footer
@@ -19,6 +44,7 @@ function Footer() {
       {/* =========================
           MAIN FOOTER
           ========================= */}
+
       <div
         className="
           mx-auto
@@ -44,6 +70,7 @@ function Footer() {
           {/* =========================
               ABOUT
               ========================= */}
+
           <div className="lg:col-span-1">
             <h2
               className="
@@ -55,7 +82,7 @@ function Footer() {
                 dark:text-[#F1EFE8]
               "
             >
-              Sachin Jadaun
+              {portfolio?.fullName || "Sachin Jadaun"}
             </h2>
 
             <p
@@ -68,77 +95,65 @@ function Footer() {
                 dark:text-[#D6B84C]
               "
             >
-              Full Stack Developer
+              {portfolio?.title || "Full Stack Developer"}
             </p>
 
-            <p
-              className="
-                mt-5
-                text-sm
-                leading-7
-                text-[#6D6960]
+            {portfolio?.bio && (
+              <p
+                className="
+                  mt-5
+                  text-sm
+                  leading-7
+                  text-[#6D6960]
 
-                dark:text-[#A6A198]
-              "
-            >
-              I am a Computer Science engineering student and
-              aspiring software developer focused on building
-              responsive, scalable and user-friendly web
-              applications.
-            </p>
-
-            <p
-              className="
-                mt-4
-                text-sm
-                leading-7
-                text-[#6D6960]
-
-                dark:text-[#A6A198]
-              "
-            >
-              I work across frontend and backend development,
-              with experience in React, Node.js, Express,
-              MongoDB, Java, Spring Boot and PostgreSQL.
-            </p>
+                  dark:text-[#A6A198]
+                "
+              >
+                {portfolio.bio}
+              </p>
+            )}
 
             {/* GitHub */}
-            <a
-              href="https://github.com/sachinjadaun113"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="
-                mt-6
-                inline-flex
-                items-center
-                rounded-full
-                border
-                border-[#C9A227]/40
-                px-4
-                py-2
 
-                text-xs
-                font-semibold
-                text-[#806510]
+            {portfolio?.githubUrl && (
+              <a
+                href={portfolio.githubUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="
+                  mt-6
+                  inline-flex
+                  items-center
+                  rounded-full
+                  border
+                  border-[#C9A227]/40
+                  px-4
+                  py-2
 
-                transition-all
-                duration-300
+                  text-xs
+                  font-semibold
+                  text-[#806510]
 
-                hover:-translate-y-0.5
-                hover:bg-[#E8D9A8]/40
+                  transition-all
+                  duration-300
 
-                dark:border-[#D6B84C]/40
-                dark:text-[#D6B84C]
-                dark:hover:bg-[#D6B84C]/10
-              "
-            >
-              GitHub: sachinjadaun113
-            </a>
+                  hover:-translate-y-0.5
+                  hover:bg-[#E8D9A8]/40
+
+                  dark:border-[#D6B84C]/40
+                  dark:text-[#D6B84C]
+                  dark:hover:bg-[#D6B84C]/10
+                "
+              >
+                GitHub
+              </a>
+            )}
           </div>
 
           {/* =========================
               DEVELOPMENT
               ========================= */}
+
           <div>
             <h3
               className="
@@ -181,6 +196,7 @@ function Footer() {
           {/* =========================
               DSA & PROBLEM SOLVING
               ========================= */}
+
           <div>
             <h3
               className="
@@ -239,7 +255,7 @@ function Footer() {
 
             <div className="mt-5 space-y-3">
               <a
-                href="https://leetcode.com/"
+                href="https://leetcode.com/u/sachinjadaun113/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="
@@ -258,7 +274,7 @@ function Footer() {
               </a>
 
               <a
-                href="https://www.geeksforgeeks.org/"
+                href="https://www.geeksforgeeks.org/user/sachinjadaun113/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="
@@ -281,6 +297,7 @@ function Footer() {
           {/* =========================
               QUICK LINKS
               ========================= */}
+
           <div>
             <h3
               className="
@@ -405,6 +422,7 @@ function Footer() {
         {/* =========================
             TECHNOLOGY SUMMARY
             ========================= */}
+
         <div
           className="
             mt-14
@@ -518,6 +536,7 @@ function Footer() {
         {/* =========================
             SOCIAL LINKS
             ========================= */}
+
         <div
           className="
             mt-12
@@ -558,59 +577,69 @@ function Footer() {
           </div>
 
           <div className="flex flex-wrap gap-3">
-            <a
-              href="https://github.com/sachinjadaun113"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="
-                rounded-full
-                border
-                border-[#D3CCBD]
-                px-4
-                py-2
-                text-xs
-                font-semibold
-                text-[#6D6960]
+            {/* GitHub */}
 
-                transition-all
-                hover:border-[#A77C16]
-                hover:text-[#927016]
+            {portfolio?.githubUrl && (
+              <a
+                href={portfolio.githubUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="
+                  rounded-full
+                  border
+                  border-[#D3CCBD]
+                  px-4
+                  py-2
+                  text-xs
+                  font-semibold
+                  text-[#6D6960]
 
-                dark:border-[#302D28]
-                dark:text-[#A6A198]
-                dark:hover:border-[#D6B84C]
-                dark:hover:text-[#D6B84C]
-              "
-            >
-              GitHub
-            </a>
+                  transition-all
+                  hover:border-[#A77C16]
+                  hover:text-[#927016]
 
-            <a
-              href="https://www.linkedin.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="
-                rounded-full
-                border
-                border-[#D3CCBD]
-                px-4
-                py-2
-                text-xs
-                font-semibold
-                text-[#6D6960]
+                  dark:border-[#302D28]
+                  dark:text-[#A6A198]
+                  dark:hover:border-[#D6B84C]
+                  dark:hover:text-[#D6B84C]
+                "
+              >
+                GitHub
+              </a>
+            )}
 
-                transition-all
-                hover:border-[#A77C16]
-                hover:text-[#927016]
+            {/* LinkedIn */}
 
-                dark:border-[#302D28]
-                dark:text-[#A6A198]
-                dark:hover:border-[#D6B84C]
-                dark:hover:text-[#D6B84C]
-              "
-            >
-              LinkedIn
-            </a>
+            {portfolio?.linkedinUrl && (
+              <a
+                href={portfolio.linkedinUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="
+                  rounded-full
+                  border
+                  border-[#D3CCBD]
+                  px-4
+                  py-2
+                  text-xs
+                  font-semibold
+                  text-[#6D6960]
+
+                  transition-all
+                  hover:border-[#A77C16]
+                  hover:text-[#927016]
+
+                  dark:border-[#302D28]
+                  dark:text-[#A6A198]
+                  dark:hover:border-[#D6B84C]
+                  dark:hover:text-[#D6B84C]
+                "
+              >
+                LinkedIn
+              </a>
+            )}
+
+            {/* Contact */}
 
             <a
               href="#contact"
@@ -641,6 +670,7 @@ function Footer() {
       {/* =========================
           BOTTOM BAR
           ========================= */}
+
       <div
         className="
           border-t
@@ -677,7 +707,9 @@ function Footer() {
               dark:text-[#918C83]
             "
           >
-            © {currentYear} Sachin Jadaun. All rights reserved.
+            © {currentYear}{" "}
+            {portfolio?.fullName || "Sachin Jadaun"}.
+            All rights reserved.
           </p>
 
           <p
@@ -700,22 +732,22 @@ function Footer() {
               dark:text-[#D6B84C]
             "
           >
-           <a
-             href="https://github.com/sachinjadaun113/sachin_jadaun-portfolio"
-             target="_blank"
-             rel="noopener noreferrer"
-             className="
-               text-sm
-               text-[#6D6960]
-               transition-colors
-               hover:text-[#927016]
+            <a
+              href="https://github.com/sachinjadaun113/sachin_jadaun-portfolio"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="
+                text-sm
+                text-[#6D6960]
+                transition-colors
+                hover:text-[#927016]
 
-               dark:text-[#A6A198]
-               dark:hover:text-[#D6B84C]
-             "
-           >
-             Portfolio Source Code →
-           </a>
+                dark:text-[#A6A198]
+                dark:hover:text-[#D6B84C]
+              "
+            >
+              Portfolio Source Code →
+            </a>
           </p>
         </div>
       </div>

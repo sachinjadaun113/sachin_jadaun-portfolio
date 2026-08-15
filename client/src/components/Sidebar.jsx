@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 
 const navigationItems = [
   { id: "home", label: "Home", icon: "⌂" },
@@ -9,11 +10,12 @@ const navigationItems = [
   { id: "documents", label: "Achievements", icon: "🏆" },
   { id: "documents", label: "Certificates", icon: "📜" },
   { id: "resume", label: "Resume / CV", icon: "📄" },
-  { id: "ratings", label: "Reviews", icon: "⭐" },
+  { id: "rating", label: "Reviews", icon: "⭐" },
   { id: "contact", label: "Contact", icon: "✉" },
 ];
 
 function Sidebar({ sidebarOpen, onClose }) {
+  const navigate = useNavigate();
 
   const scrollToSection = (sectionId) => {
     const section = document.getElementById(sectionId);
@@ -34,9 +36,9 @@ function Sidebar({ sidebarOpen, onClose }) {
   };
 
   const handleLogin = () => {
-  onClose();
-  window.location.assign("/login");
-};
+    onClose();
+    navigate("/login");
+  };
 
   return (
     <>
@@ -155,9 +157,7 @@ function Sidebar({ sidebarOpen, onClose }) {
                 <button
                   key={`${item.id}-${index}`}
                   type="button"
-                  onClick={() =>
-                    scrollToSection(item.id)
-                  }
+                  onClick={() => scrollToSection(item.id)}
                   className="
                     group
                     flex

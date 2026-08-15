@@ -6,9 +6,9 @@ The project includes a public portfolio website along with a secure owner dashbo
 
 ## 🚀 Live Demo
 
-**Frontend:** Add your Vercel URL here
+**Frontend:**https://sachin-jadaun-portfolio.vercel.app
 
-**Backend API:** Add your Render URL here
+**Backend API:** https://sachin-jadaun-portfolio.onrender.com
 
 ---
 

@@ -10,6 +10,8 @@ The project includes a public portfolio website along with a secure owner dashbo
 
 **Backend API:** https://sachin-jadaun-portfolio.onrender.com
 
+**Video URL:** https://youtu.be/SxrFKKSKlVs
+
 ---
 
 ## ✨ Features
